@@ -9,10 +9,10 @@ interface ProductListProps {
   loading: boolean;
 }
 
-const Row = ({ index, style, products, loading }: { index: number; style: React.CSSProperties; products: Product[]; loading: boolean }) => {
+const Row = ({ index, style, products, loading, ariaAttributes }: { index: number; style: React.CSSProperties; products: Product[]; loading: boolean; ariaAttributes?: any }) => {
   if (loading) {
     return (
-      <div style={style} className={styles.rowWrapper}>
+      <div style={style} className={styles.rowWrapper} {...ariaAttributes}>
         <div className={`${styles.card} ${styles.skeleton} glass`}>
           <div className={styles.skeletonImage} />
           <div className={styles.info}>
@@ -28,7 +28,7 @@ const Row = ({ index, style, products, loading }: { index: number; style: React.
   if (!product) return null;
 
   return (
-    <div style={style} className={styles.rowWrapper}>
+    <div style={style} className={styles.rowWrapper} {...ariaAttributes}>
       <div className={`${styles.card} glass glass-hover`}>
         <div className={styles.imageContainer}>
           <img src={product.image} alt={product.name} loading="lazy" />

@@ -44,7 +44,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ options, value, onChange, la
       </div>
 
       {isOpen && (
-        <div className={`${styles.menu} glass animate-slide-up`}>
+        <div className={`${styles.menu} glass ${styles['animate-slide-up']}`}>
           {options.map((option) => (
             <div
               key={option.value}
