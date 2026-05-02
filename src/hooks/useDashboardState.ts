@@ -1,12 +1,12 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Product, ProductFilters, SortConfig, DashboardStats, Category } from '../types/product';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Product, ProductFilters, SortConfig, DashboardStats } from '../types/product';
 import { ProductService } from '../services/productService';
 
 export const useDashboardState = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  
   const [filters, setFilters] = useState<ProductFilters>({
     search: '',
     categories: [],
@@ -21,8 +21,8 @@ export const useDashboardState = () => {
   });
 
   const fetchProducts = useCallback(async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const data = await ProductService.getProducts(filters, sort);
       setProducts(data);
       setError(null);
@@ -38,38 +38,75 @@ export const useDashboardState = () => {
     fetchProducts();
   }, [fetchProducts]);
 
-  const stats: DashboardStats = useMemo(() => {
-    const categories: Category[] = ['Electronics', 'Clothing', 'Home', 'Beauty', 'Sports'];
+  // Stable Categories (extracted once or updated when data source changes)
+  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (products.length > 0 && availableCategories.length === 0) {
+      const cats = new Set<string>();
+      products.forEach(p => {
+        if (p.category) cats.add(p.category.trim());
+      });
+      if (cats.size > 0) {
+        setAvailableCategories(Array.from(cats).sort());
+      }
+    }
+  }, [products, availableCategories.length]);
+
+  const stats = useMemo<DashboardStats>(() => {
+    const categoryData: Record<string, { total: number; count: number; totalRating: number; totalStock: number }> = {};
     
-    const avgPrice = categories.map(cat => {
-      const catProducts = products.filter(p => p.category === cat);
-      const avg = catProducts.length > 0 
-        ? catProducts.reduce((sum, p) => sum + p.price, 0) / catProducts.length 
-        : 0;
-      return { category: cat, value: parseFloat(avg.toFixed(2)) };
+    products.forEach((p) => {
+      // Skip undefined or empty categories
+      if (!p.category || p.category === 'undefined') return;
+
+      if (!categoryData[p.category]) {
+        categoryData[p.category] = { total: 0, count: 0, totalRating: 0, totalStock: 0 };
+      }
+      categoryData[p.category].total += p.price;
+      categoryData[p.category].totalRating += p.rating;
+      categoryData[p.category].totalStock += p.stock;
+      categoryData[p.category].count += 1;
     });
 
-    const counts = categories.map(cat => ({
-      category: cat,
-      value: products.filter(p => p.category === cat).length
+    const averagePricePerCategory = Object.entries(categoryData).map(([category, data]) => ({
+      category,
+      value: Math.round(data.total / data.count),
     }));
 
-    return {
-      averagePricePerCategory: avgPrice,
-      productCountPerCategory: counts
+    const productCountPerCategory = Object.entries(categoryData).map(([category, data]) => ({
+      category,
+      value: data.count,
+    }));
+
+    const averageRatingPerCategory = Object.entries(categoryData).map(([category, data]) => ({
+      category,
+      value: parseFloat((data.totalRating / data.count).toFixed(1)),
+    }));
+
+    const totalStockPerCategory = Object.entries(categoryData).map(([category, data]) => ({
+      category,
+      value: data.totalStock,
+    }));
+
+    return { 
+      averagePricePerCategory, 
+      productCountPerCategory,
+      averageRatingPerCategory,
+      totalStockPerCategory
     };
   }, [products]);
 
-  // Real-time update listener simulation
   const triggerManualUpdate = useCallback((updatedProducts: Product[]) => {
-    // Only update existing products in the current filtered list if they match filters
-    // For simplicity in simulation, we'll just re-filter/sort locally or just replace if simple
     setProducts(prev => {
-        // Find if any of our currently displayed products need updating
-        return prev.map(p => {
-            const updated = updatedProducts.find(up => up.id === p.id);
-            return updated ? updated : p;
-        });
+      const productMap = new Map(prev.map(p => [p.id, p]));
+      updatedProducts.forEach(up => {
+        if (productMap.has(up.id)) {
+          // Merge the update into the existing product to prevent missing fields
+          productMap.set(up.id, { ...productMap.get(up.id)!, ...up });
+        }
+      });
+      return Array.from(productMap.values());
     });
   }, []);
 
@@ -82,6 +119,7 @@ export const useDashboardState = () => {
     sort,
     setSort,
     stats,
-    triggerManualUpdate
+    availableCategories,
+    triggerManualUpdate,
   };
 };

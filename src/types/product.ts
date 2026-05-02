@@ -1,4 +1,4 @@
-export type Category = 'Electronics' | 'Clothing' | 'Home' | 'Beauty' | 'Sports';
+export type Category = string;
 
 export interface Product {
   id: string;
@@ -7,6 +7,7 @@ export interface Product {
   category: Category;
   rating: number;
   stock: number;
+  image: string;
 }
 
 export interface ProductFilters {
@@ -28,4 +29,6 @@ export interface SortConfig {
 export interface DashboardStats {
   averagePricePerCategory: { category: string; value: number }[];
   productCountPerCategory: { category: string; value: number }[];
+  averageRatingPerCategory: { category: string; value: number }[];
+  totalStockPerCategory: { category: string; value: number }[];
 }

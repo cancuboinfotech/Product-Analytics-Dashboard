@@ -1,0 +1,212 @@
+.container {
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+  background: linear-gradient(135deg, rgba(15, 15, 20, 0.8) 0%, rgba(10, 10, 12, 0.9) 100%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header h2 {
+  font-family: var(--font-outfit);
+  font-size: 1.15rem;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+.icon {
+  color: var(--accent);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.value {
+  font-size: 0.85rem;
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1.25rem;
+  color: var(--text-muted);
+}
+
+.searchWrapper input {
+  width: 100%;
+  padding: 0.85rem 1.25rem 0.85rem 3rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  color: white;
+  font-family: var(--font-inter);
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.searchWrapper input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.1);
+}
+
+.divider {
+  height: 1px;
+  background: var(--card-border);
+  width: 100%;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Custom scrollbar for category grid */
+.categoryGrid::-webkit-scrollbar {
+  width: 4px;
+}
+.categoryGrid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+.categoryGrid::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+.categoryGrid::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+.catButton {
+  padding: 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.catButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.catButton.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.rangeWrapper {
+  position: relative;
+  padding: 1rem 0;
+}
+
+.rangeWrapper input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent-cyan);
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  -webkit-appearance: none;
+}
+
+.rangeWrapper input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.rangeWrapper input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px var(--accent-cyan);
+  margin-top: -6px;
+}
+
+.ratingRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.star {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+  padding: 0;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.starActive {
+  color: var(--warning);
+  filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.3));
+}
+
+.resetButton {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resetButton:hover {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
